@@ -1,3 +1,6 @@
+#ProCONFIG-shop {
+clear: both;
+}
 #configurator, #selection {
 border: 2px solid;
 border-radius: 12px;
@@ -26,6 +29,7 @@ position: relative;
 position: absolute;
 left: 0;
 top: 0;
+height: 450px;
 }
 #configurator > div {
 position: relative;

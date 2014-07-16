@@ -235,32 +235,32 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.presets:    json file with presets
 
         // render shop
-        $('#' + user_config.shop).append('<div id="selection">' +
+        $('#' + config.shop).append('<div id="selection">' +
                 '<div class="image-stack">' +
-                '<img src="' + config.imgMain + '/' + user_config.firstGroup + '.png" />' +
+                '<img src="' + config.imgMain + '/' + config.firstGroup + '.png" />' +
                 '</div><p class="amount"></p>' +
                 '<button id="cancel">zurücksetzen</button></div>' +
                 '<div id="configurator"></div>');
 
         // Load items
-        $.getJSON( user_config.items, function( item_data ) {
+        $.getJSON( config.items, function( item_data ) {
 
             items = item_data;
             // create deep copy of `items` for reset
             items_original = JSON.parse(JSON.stringify(items));
 
             // Load presets
-            $.getJSON( user_config.presets, function( preset_data ) {
+            $.getJSON( config.presets, function( preset_data ) {
 
                 presets = preset_data;
-                renderGroup(user_config.firstGroup);
+                renderGroup(config.firstGroup);
 
             }).fail(function() {
-                console.log( "ERROR: Failed to load \"" + user_config.presets + "\"" );
+                console.log( "ERROR: Failed to load \"" + config.presets + "\"" );
             });
 
         }).fail(function() {
-            console.log( "ERROR: Failed to load \"" + user_config.items + "\"" );
+            console.log( "ERROR: Failed to load \"" + config.items + "\"" );
         });
 
     };
@@ -270,6 +270,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             items = JSON.parse(JSON.stringify(items_original));
             order = { items: [], total: 0 };
             $('#selection .amount, #configurator').html('');
+            $('#selection .image-stack').html('<img src="' + config.imgMain +
+                    '/' + config.firstGroup + '.png" />');
             renderGroup(config.firstGroup);
         }
     };
