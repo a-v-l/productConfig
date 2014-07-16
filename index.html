@@ -12,10 +12,12 @@
     <script type="text/javascript">
     jQuery( function () {
         ProCONFIG.init({
-            shop: "ProCONFIG-shop",     // id of container to render the shop
-            firstGroup: "type",         // first group to be displayed
-            items: "json/items.json",   // json file with items
-            presets: "json/presets.json"// json file with presets
+            shop: "ProCONFIG-shop",      // id of container to render the shop
+            firstGroup: "type",          // first group to be displayed
+            imgMain: "images/main",      // path to main images
+            imgItem: "images/items",     // path to item images
+            items: "json/items.json",    // json file with items
+            presets: "json/presets.json" // json file with presets
         });
         $('#cancel').on('click', function(e) {
             e.preventDefault();

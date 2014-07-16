@@ -47,8 +47,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             groupContainer.find('.items').append('<div class="item" data-childgroup="' +
                     item.childgroup + '" data-price="' + item.price +
                     '" data-preset="' + item.preset + '"><h3>' +
-                    item.name + '</h3><div class="item-img"><img src="image_items/' +
-                    group+"_"+item.name.replace(/[ \/]/g, "_") +
+                    item.name + '</h3><div class="item-img"><img src="' + config.imgItem +
+                    '/' + group + "_"+item.name.replace(/[ \/]/g, "_") +
                     '.jpg"></div><p class="description">' + item.description +
                     '</p><p class="price">' + toEuro(item.price) + '</p></div>');
         }
@@ -100,8 +100,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // Print total
         $('#selection .amount').text( toEuro( order.total.toFixed(2) ) );
 
-        // Load new image_main
-        $('#selection .image-stack').append('<img src="image_main/' +
+        // Load new main image
+        $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
                 parent.prop('id') + "_" + button.find('h3').text().replace(/[ \/]/g, "_") +
                 '.png" alt="VELOSIZER">');
 
@@ -225,12 +225,19 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     };
 
     exports.init = function (user_config) {
+
         config = user_config;
+        // config.shop:       id of container to render the shop
+        // config.firstGroup: first group to be displayed
+        // config.imgMain:    path to main images (.PNG)
+        // config.imgItem:    path to item images (.JPG)
+        // config.items:      json file with items
+        // config.presets:    json file with presets
 
         // render shop
         $('#' + user_config.shop).append('<div id="selection">' +
                 '<div class="image-stack">' +
-                '<img src="image_main/' + user_config.firstGroup + '.png" />' +
+                '<img src="' + config.imgMain + '/' + user_config.firstGroup + '.png" />' +
                 '</div><p class="amount"></p>' +
                 '<button id="cancel">zurücksetzen</button></div>' +
                 '<div id="configurator"></div>');
