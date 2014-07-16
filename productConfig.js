@@ -227,8 +227,18 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     exports.init = function (user_config) {
         config = user_config;
 
-        // Load items
+        // first time init
         if (items === undefined) {
+
+            // render shop
+            $('#' + user_config.shop).append('<div id="selection">' +
+                    '<div class="image-stack">' +
+                    '<img src="image_main/' + user_config.firstGroup + '.png" />' +
+                    '</div><p class="amount"></p>' +
+                    '<button id="cancel">zurücksetzen</button></div>' +
+                    '<div id="configurator"></div>');
+
+            // Load items
             $.getJSON( user_config.items, function( item_data ) {
 
                 items = item_data;
@@ -248,6 +258,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             }).fail(function() {
                 console.log( "ERROR: Failed to load \"" + user_config.items + "\"" );
             });
+
+        // reset
         } else {
             renderGroup(user_config.firstGroup);
         }
@@ -261,8 +273,6 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             exports.init(config);
         }
     };
-
-    //exports.order = order;
 
     return exports;
 

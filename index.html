@@ -6,22 +6,16 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <div id="selection">
-        <div class="image-stack">
-            <img src="image_main/velosizer.png" alt="VELOSIZER" />
-        </div>
-        <p class="amount"></p>
-        <button id="cancel">zurücksetzen</button>
-    </div>
-    <div id="configurator"></div>
+    <div id="ProCONFIG-shop"></div>
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="productConfig.js"></script>
     <script type="text/javascript">
     jQuery( function () {
         ProCONFIG.init({
-            firstGroup: "type",
-            items: "json/items.json",
-            presets: "json/presets.json"
+            shop: "ProCONFIG-shop",     // id of container to render the shop
+            firstGroup: "type",         // first group to be displayed
+            items: "json/items.json",   // json file with items
+            presets: "json/presets.json"// json file with presets
         });
         $('#cancel').on('click', function(e) {
             e.preventDefault();
