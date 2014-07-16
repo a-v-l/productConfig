@@ -227,42 +227,35 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     exports.init = function (user_config) {
         config = user_config;
 
-        // first time init
-        if (items === undefined) {
+        // render shop
+        $('#' + user_config.shop).append('<div id="selection">' +
+                '<div class="image-stack">' +
+                '<img src="image_main/' + user_config.firstGroup + '.png" />' +
+                '</div><p class="amount"></p>' +
+                '<button id="cancel">zurücksetzen</button></div>' +
+                '<div id="configurator"></div>');
 
-            // render shop
-            $('#' + user_config.shop).append('<div id="selection">' +
-                    '<div class="image-stack">' +
-                    '<img src="image_main/' + user_config.firstGroup + '.png" />' +
-                    '</div><p class="amount"></p>' +
-                    '<button id="cancel">zurücksetzen</button></div>' +
-                    '<div id="configurator"></div>');
+        // Load items
+        $.getJSON( user_config.items, function( item_data ) {
 
-            // Load items
-            $.getJSON( user_config.items, function( item_data ) {
+            items = item_data;
+            // create deep copy of `items` for reset
+            items_original = JSON.parse(JSON.stringify(items));
 
-                items = item_data;
-                // create deep copy of `items` for reset
-                items_original = JSON.parse(JSON.stringify(items));
+            // Load presets
+            $.getJSON( user_config.presets, function( preset_data ) {
 
-                // Load presets
-                $.getJSON( user_config.presets, function( preset_data ) {
-
-                    presets = preset_data;
-                    renderGroup(user_config.firstGroup);
-
-                }).fail(function() {
-                    console.log( "ERROR: Failed to load \"" + user_config.presets + "\"" );
-                });
+                presets = preset_data;
+                renderGroup(user_config.firstGroup);
 
             }).fail(function() {
-                console.log( "ERROR: Failed to load \"" + user_config.items + "\"" );
+                console.log( "ERROR: Failed to load \"" + user_config.presets + "\"" );
             });
 
-        // reset
-        } else {
-            renderGroup(user_config.firstGroup);
-        }
+        }).fail(function() {
+            console.log( "ERROR: Failed to load \"" + user_config.items + "\"" );
+        });
+
     };
 
     exports.reset = function (msg) {
@@ -270,7 +263,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             items = JSON.parse(JSON.stringify(items_original));
             order = { items: [], total: 0 };
             $('#selection .amount, #configurator').html('');
-            exports.init(config);
+            renderGroup(config.firstGroup);
         }
     };
 
