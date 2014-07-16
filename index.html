@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>ProduktKonfigurator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div id="selection">
+        <div class="image-stack">
+            <img src="image_main/velosizer.png" alt="VELOSIZER" />
+        </div>
+        <p class="amount"></p>
+        <button id="cancel">zurücksetzen</button>
+    </div>
+    <div id="configurator"></div>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="productConfig.js"></script>
+    <script type="text/javascript">
+    jQuery( function () {
+        ProCONFIG.init({
+            firstGroup: "type",
+            items: "json/items.json",
+            presets: "json/presets.json"
+        });
+        $('#cancel').on('click', function(e) {
+            e.preventDefault();
+            ProCONFIG.reset('Achtung: Die komplette Auswahl wird zurückgesetzt!');
+        });
+    });
+    </script>
+</body>
+</html>
