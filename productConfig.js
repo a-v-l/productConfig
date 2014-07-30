@@ -12,14 +12,13 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
     var items,
         items_original,
+        existing_form_original,
         presets,
         order = {
             items: [],
             total: 0
         },
         config;
-
-    //var group_height = 0; // Mal sehen…
 
     // Object for public APIs
     var exports = {};
@@ -114,7 +113,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         if (nextGroup !== 'contact') {
             renderGroup(nextGroup);
         } else {
-            renderContact();
+            injectForm();
         }
 
     }
@@ -167,53 +166,21 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         }
     }
 
-    // Kontaktformular
-    var renderContact = function() {
-        var contact = '<div id="contact" class=""><h3>Kontaktdaten</h3>' +
-                '<form name="contact"><table>' +
-                '<tr><td>Vorname:</td><td><input type="text" name="prename" tabindex="1" /></td>' +
-                '<td>Straße, Hausnr.:</td><td><input type="text" name="street" tabindex="5" /></td></tr>' +
-                '<tr><td>Nachname:</td><td><input type="text" name="surname" tabindex="2" /></td>' +
-                '<td>Postleitzahl:</td><td><input type="text" name="PLZ" tabindex="6" /></td></tr>' +
-                '<tr><td>Firma:</td><td><input type="text" name="company" tabindex="3" /></td>' +
-                '<td>Ort:</td><td><input type="text" name="city" tabindex="7" /></td></tr>' +
-                '<tr><td>E-Mail:</td><td><input type="text" name="mail" tabindex="4" /></td>' +
-                '<td>Telefon:</td><td><input type="text" name="phone" tabindex="8" /></td></tr>' +
-                '</table>'+
-                '<button>weiter</button></form>';
-        $("#configurator").append( contact ).find('button').on('click', saveContact);
-    }
+    // Take existing order form from page and and append it to the configurator
+    var injectForm = function() {
 
-    var saveContact = function(e) {
-        e.preventDefault();
-        var button = $(this);
-        var caption = button.text() === 'bearbeiten' ? 'speichern' : 'bearbeiten';
-        button.text(caption);
-        button.off('click').on('click', saveContact);
-        $('#contact input').each(function(){
-            $(this).prop('disabled', caption === 'bearbeiten');
-            order[ $(this).prop('name') ] = $(this).val();
-        });
-        if ( $('#confirmation').length === 1) {
-            $('#confirmation button[type="submit"]').prop('disabled', caption !== 'bearbeiten');
-        } else {
-            renderConfirmation();
+        // move existing form to configurator or use deep copy
+        var existing_form;
+        if ( existing_form_original === undefined ) {
+            existing_form_original = $( config.existingForm ).clone();
+            $( config.existingForm ).remove();
         }
-    }
+        existing_form = existing_form_original.clone();
 
-    // Bestellbestätigung
-    var renderConfirmation = function() {
-        var confirmation = '<div id="confirmation" class=""><h3>Bestellbestätigung</h3>' +
-                '<form name="confirmation">' +
-                '<input type="checkbox" name="agbs" /> Ich habe die <a href="AGBs.html">AGBs</a> gelesen<br>' +
-                '<input type="checkbox" name="widerruf" /> Ich habe die <a href="Widerruf.html">Widerrufbelehrung</a> gelesen<br>' +
-                '<button type="submit">abschicken</button></form>';
-        $("#configurator").append( confirmation ).find('button[type="submit"]').on('click', function(e) {
-            e.preventDefault();
-            order.agbs = $('input[name="agbs"]').prop('checked');
-            order.widerruf = $('input[name="widerruf"]').prop('checked');
-            console.log(JSON.stringify(order));
-        });
+        $("#configurator").append('<div>').find('div').last().append(existing_form);
+
+        // fill hidden field with order details
+        $( config.hiddenField ).val(JSON.stringify(order));
     }
 
     var toEuro = function (amount) {
@@ -227,12 +194,14 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     exports.init = function (user_config) {
 
         config = user_config;
-        // config.shop:       id of container to render the shop
-        // config.firstGroup: first group to be displayed
-        // config.imgMain:    path to main images (.PNG)
-        // config.imgItem:    path to item images (.JPG)
-        // config.items:      json file with items
-        // config.presets:    json file with presets
+        // config.shop:         id of container to render the shop
+        // config.firstGroup:   first group to be displayed
+        // config.imgMain:      path to main images (.PNG)
+        // config.imgItem:      path to item images (.JPG)
+        // config.items:        json file with items
+        // config.presets:      json file with presets
+        // config.existingForm: form on page to append to configurator
+        // config.hiddenField:  field to fill order details
 
         // render shop
         $('#' + config.shop).append('<div id="selection" class="grid3">' +
