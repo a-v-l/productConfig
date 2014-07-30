@@ -38,7 +38,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             i, item;
 
         // Append group description
-        groupContainer.append( '<h2>' + items[group].title + '</h2><p>' +
+        groupContainer.append( '<h3>' + items[group].title + '</h3><p>' +
                 items[group].description + '</p><div class="items">' );
 
         // Append items
@@ -46,8 +46,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             item = items[group].items[i];
             groupContainer.find('.items').append('<div class="item" data-childgroup="' +
                     item.childgroup + '" data-price="' + item.price +
-                    '" data-preset="' + item.preset + '"><h3>' +
-                    item.name + '</h3><div class="item-img"><img src="' + config.imgItem +
+                    '" data-preset="' + item.preset + '"><h4>' +
+                    item.name + '</h4><div class="item-img"><img src="' + config.imgItem +
                     '/' + group + "_"+item.name.replace(/[ \/]/g, "_") +
                     '.jpg"></div><p class="description">' + item.description +
                     '</p><p class="price">' + toEuro(item.price) + '</p></div>');
@@ -91,7 +91,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // Save selection to order
         order.items.push({
             group: parent.prop('id'),
-            item: button.find('h3').text(),
+            item: button.find('h4').text(),
             price: button.data('price')
         });
 
@@ -102,7 +102,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
         // Load new main image
         $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
-                parent.prop('id') + "_" + button.find('h3').text().replace(/[ \/]/g, "_") +
+                parent.prop('id') + "_" + button.find('h4').text().replace(/[ \/]/g, "_") +
                 '.png" alt="VELOSIZER">');
 
         // Load preset if any
@@ -169,7 +169,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
     // Kontaktformular
     var renderContact = function() {
-        var contact = '<div id="contact" class=""><h2>Kontaktdaten</h2>' +
+        var contact = '<div id="contact" class=""><h3>Kontaktdaten</h3>' +
                 '<form name="contact"><table>' +
                 '<tr><td>Vorname:</td><td><input type="text" name="prename" tabindex="1" /></td>' +
                 '<td>Straße, Hausnr.:</td><td><input type="text" name="street" tabindex="5" /></td></tr>' +
@@ -203,10 +203,10 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
     // Bestellbestätigung
     var renderConfirmation = function() {
-        var confirmation = '<div id="confirmation" class=""><h2>Bestellbestätigung</h2>' +
+        var confirmation = '<div id="confirmation" class=""><h3>Bestellbestätigung</h3>' +
                 '<form name="confirmation">' +
-                '<input type="checkbox" name="agbs" /> Ich habe die <a href="#">AGBs</a> gelesen<br>' +
-                '<input type="checkbox" name="widerruf" /> Ich habe die <a href="#">Widerrufbelehrung</a> gelesen<br>' +
+                '<input type="checkbox" name="agbs" /> Ich habe die <a href="AGBs.html">AGBs</a> gelesen<br>' +
+                '<input type="checkbox" name="widerruf" /> Ich habe die <a href="Widerruf.html">Widerrufbelehrung</a> gelesen<br>' +
                 '<button type="submit">abschicken</button></form>';
         $("#configurator").append( confirmation ).find('button[type="submit"]').on('click', function(e) {
             e.preventDefault();
@@ -235,12 +235,12 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.presets:    json file with presets
 
         // render shop
-        $('#' + config.shop).append('<div id="selection">' +
+        $('#' + config.shop).append('<div id="selection" class="grid3">' +
                 '<div class="image-stack">' +
                 '<img src="' + config.imgMain + '/' + config.firstGroup + '.png" />' +
                 '</div><p class="amount"></p>' +
                 '<button id="cancel">zurücksetzen</button></div>' +
-                '<div id="configurator"></div>');
+                '<div id="configurator" class="grid9"></div>');
 
         // Load items
         $.getJSON( config.items, function( item_data ) {
