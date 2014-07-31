@@ -136,7 +136,9 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         items = JSON.parse(JSON.stringify(items_original));
 
         // restore `#selection`
-        $('#selection .amount').text( toEuro( exports.order.total.toFixed(2) ) );
+        var total = toEuro( exports.order.total.toFixed(2) );
+        total = total === config.i18n.included ? "<span>0,00 €</span>" : total;
+        $('#selection .amount').html( total );
         $('#selection .image-stack img').last().remove();
 
         renderGroup(previousGroup);
@@ -253,7 +255,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         if ( window.confirm( config.i18n.reset_msg ) ) {
             items = JSON.parse(JSON.stringify(items_original));
             exports.order = { items: [], total: 0 };
-            $('#selection .amount, #configurator').html('<span>0,00 €</span>');
+            $('#selection .amount').html('<span>0,00 €</span>');
+            $('#configurator').html();
             $('#selection .image-stack').html('<img src="' + config.imgMain +
                     '/' + config.firstGroup + '.png" />');
             renderGroup(config.firstGroup);
