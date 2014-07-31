@@ -14,14 +14,15 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         items_original,
         existing_form_original,
         presets,
-        order = {
-            items: [],
-            total: 0
-        },
         config;
 
     // Object for public APIs
     var exports = {};
+
+    exports.order = {
+            items: [],
+            total: 0
+        };
 
     //
     // METHODS
@@ -88,16 +89,16 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             .find('.item').off('click');
 
         // Save selection to order
-        order.items.push({
+        exports.order.items.push({
             group: parent.prop('id'),
             item: button.find('h4').text(),
             price: button.data('price')
         });
 
-        order.total += button.data('price');
+        exports.order.total += button.data('price');
 
         // Print total
-        $('#selection .amount').text( toEuro( order.total.toFixed(2) ) );
+        $('#selection .amount').text( toEuro( exports.order.total.toFixed(2) ) );
 
         // Load new main image
         $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
@@ -124,17 +125,17 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         $(this).parent().add('#' + previousGroup).remove();
 
         // clean up `order` object
-        order.items.pop();
-        order.total = 0;
-        order.items.forEach( function (selected_item) {
-            order.total += selected_item.price;
+        exports.order.items.pop();
+        exports.order.total = 0;
+        exports.order.items.forEach( function (selected_item) {
+            exports.order.total += selected_item.price;
         });
 
         // restore `items` *** PROVISIONAL SOLUTION ***
         items = JSON.parse(JSON.stringify(items_original));
 
         // restore `#selection`
-        $('#selection .amount').text( toEuro( order.total.toFixed(2) ) );
+        $('#selection .amount').text( toEuro( exports.order.total.toFixed(2) ) );
         $('#selection .image-stack img').last().remove();
 
         renderGroup(previousGroup);
@@ -166,21 +167,21 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         }
     }
 
-    // Take existing order form from page and and append it to the configurator
+    // Take existing order form from page and append it to the configurator
     var injectForm = function() {
 
         // move existing form to configurator or use deep copy
         var existing_form;
         if ( existing_form_original === undefined ) {
-            existing_form_original = $( config.existingForm ).clone();
+            existing_form_original = $( config.existingForm ).clone( true );
             $( config.existingForm ).remove();
         }
-        existing_form = existing_form_original.clone();
+        existing_form = existing_form_original.clone( true );
 
         $("#configurator").append('<div>').find('div').last().append(existing_form);
 
         // fill hidden field with order details
-        $( config.hiddenField ).val(JSON.stringify(order));
+        $( config.hiddenField ).val(JSON.stringify(exports.order));
     }
 
     var toEuro = function (amount) {
@@ -237,7 +238,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     exports.reset = function (msg) {
         if (window.confirm(msg)) {
             items = JSON.parse(JSON.stringify(items_original));
-            order = { items: [], total: 0 };
+            exports.order = { items: [], total: 0 };
             $('#selection .amount, #configurator').html('');
             $('#selection .image-stack').html('<img src="' + config.imgMain +
                     '/' + config.firstGroup + '.png" />');
