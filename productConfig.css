@@ -17,8 +17,25 @@ text-align: center;
 }
 #selection .amount {
 font-size: 2em;
-margin: 0-10px 10px;
-border: 2px solid;
+text-align: center;
+margin: 10px 0 6px;
+}
+#selection .amount span {
+opacity: 0.5;
+}
+#selection .amount:after {
+content: "*";
+font-size: 0.5em;
+line-height: 2;
+vertical-align: top;
+padding-left: 0.2em;
+}
+#selection .shipping {
+border-top: 2px solid;
+width: 210px;
+text-align: center;
+font-size: 0.8em;
+padding-top: 0.5em;
 }
 #selection .image-stack {
 width: 206px;

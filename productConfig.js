@@ -56,7 +56,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // Append group back button
         if (group !== config.firstGroup) {
             groupContainer.append('<button class="back-button" data-parentgroup="' +
-                    groupContainer.prev().prop('id') + '">einen Schritt zurück</button>');
+                    groupContainer.prev().prop('id') + '">' + config.i18n.back +
+                    '</button>');
             groupContainer.find('.back-button').on('click', unselectItem);
         }
 
@@ -103,7 +104,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // Load new main image
         $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
                 parent.prop('id') + "_" + button.find('h4').text().replace(/[ \/]/g, "_") +
-                '.png" alt="VELOSIZER">');
+                '.png">');
 
         // Load preset if any
         if (preset !== null) {
@@ -188,7 +189,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         var euro = amount.toString();
         euro = euro.indexOf('.') !== -1 ? euro.replace(/\.(\d*)/, ',$1') : euro + ',00';
         euro = euro.substr(-3,1) === ',' ? euro : euro + "0";
-        euro = euro === "0,00" ? "inklusiv" : euro + " €";
+        euro = euro === "0,00" ? config.i18n.included : euro + " €";
         return euro;
     };
 
@@ -203,14 +204,27 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.presets:      json file with presets
         // config.existingForm: form on page to append to configurator
         // config.hiddenField:  field to fill order details
+        // config.i18n:         object containing translation
+
+        // default captions
+        config.i18n = config.i18n || {};
+        config.i18n.back = config.i18n.back || "One step back";
+        config.i18n.shipping = config.i18n.shipping || "* VAT included, plus shipping";
+        config.i18n.included = config.i18n.included || "included";
+        config.i18n.reset = config.i18n.reset || "Reset";
+        config.i18n.reset_msg = config.i18n.reset_msg || "Note: The complete selection will be reset!";
 
         // render shop
-        $('#' + config.shop).append('<div id="selection" class="grid3">' +
+        var shop = '<div id="selection" class="grid3">' +
                 '<div class="image-stack">' +
                 '<img src="' + config.imgMain + '/' + config.firstGroup + '.png" />' +
-                '</div><p class="amount"></p>' +
-                '<button id="cancel">zurücksetzen</button></div>' +
-                '<div id="configurator" class="grid9"></div>');
+                '</div><div class="total"><p class="amount"><span>0,00 €</span></p>' +
+                ( config.i18n.shipping ?
+                    '<p class="shipping">' +
+                    config.i18n.shipping +'</p>' : '' ) +
+                '</div><button id="cancel">' + config.i18n.reset + '</button></div>' +
+                '<div id="configurator" class="grid9"></div>';
+        $('#' + config.shop).append( shop );
 
         // Load items
         $.getJSON( config.items, function( item_data ) {
@@ -235,11 +249,11 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
     };
 
-    exports.reset = function (msg) {
-        if (window.confirm(msg)) {
+    exports.reset = function () {
+        if ( window.confirm( config.i18n.reset_msg ) ) {
             items = JSON.parse(JSON.stringify(items_original));
             exports.order = { items: [], total: 0 };
-            $('#selection .amount, #configurator').html('');
+            $('#selection .amount, #configurator').html('<span>0,00 €</span>');
             $('#selection .image-stack').html('<img src="' + config.imgMain +
                     '/' + config.firstGroup + '.png" />');
             renderGroup(config.firstGroup);
