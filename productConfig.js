@@ -118,10 +118,16 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             injectForm();
         }
 
+        // Callback (Arguments: Group, Item, Price)
+        if ( config.cbSelect !== undefined && typeof config.cbSelect === 'function' ) {
+            config.cbSelect( parent.prop('id'), button.find('h4').text(), button.data('price') );
+        }
+
     }
 
     // One step back
     var unselectItem = function () {
+
         var previousGroup = $(this).data('parentgroup');
         $(this).parent().add('#' + previousGroup).remove();
 
@@ -142,6 +148,12 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         $('#selection .image-stack img').last().remove();
 
         renderGroup(previousGroup);
+
+        // Callback (Arguments: previousGroup)
+        if ( config.cbUnSelect !== undefined && typeof config.cbUnSelect === 'function' ) {
+            config.cbUnSelect( previousGroup );
+        }
+
     }
 
     var mergePreset = function (preset) {
@@ -206,6 +218,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.presets:      json file with presets
         // config.existingForm: form on page to append to configurator
         // config.hiddenField:  field to fill order details
+        // config.cbSelect:     optional callback on selectItem (Arguments: Group, Item, Price)
+        // config.cbUnSelect:   optional callback on unselectItem
         // config.i18n:         object containing translation
 
         // default captions
@@ -256,7 +270,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             items = JSON.parse(JSON.stringify(items_original));
             exports.order = { items: [], total: 0 };
             $('#selection .amount').html('<span>0,00 €</span>');
-            $('#configurator').html();
+            $('#configurator').html('');
             $('#selection .image-stack').html('<img src="' + config.imgMain +
                     '/' + config.firstGroup + '.png" />');
             renderGroup(config.firstGroup);
