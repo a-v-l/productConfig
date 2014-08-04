@@ -46,11 +46,11 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             item = items[group].items[i];
             groupContainer.find('.items').append('<div class="item" data-childgroup="' +
                     item.childgroup + '" data-price="' + item.price +
-                    '" data-preset="' + item.preset + '"><h4>' +
+                    '" data-preset="' + item.preset + '" data-id="' + item.id + '"><h4>' +
                     item.name + '</h4><div class="item-img"><img src="' + config.imgItem +
-                    '/' + group + "_"+item.name.replace(/[ \/]/g, "_") +
-                    '.jpg"></div><p class="description">' + item.description +
-                    '</p><p class="price">' + toEuro(item.price) + '</p></div>');
+                    '/' + group + "_" + item.id + '.jpg"></div><p class="description">' +
+                    item.description + '</p><p class="price">' + toEuro(item.price) +
+                    '</p></div>');
         }
 
         // Append group back button
@@ -103,7 +103,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
         // Load new main image
         $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
-                parent.prop('id') + "_" + button.find('h4').text().replace(/[ \/]/g, "_") +
+                parent.prop('id') + "_" + button.data('id') +
                 '.png">');
 
         // Load preset if any
