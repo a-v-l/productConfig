@@ -41,12 +41,24 @@ padding-top: 0.5em;
 width: 206px;
 height: 450px;
 position: relative;
+box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+border: 2px solid #000;
+overflow: hidden;
 }
 #selection .image-stack img {
 position: absolute;
 left: 0;
 top: 0;
 height: 450px;
+box-shadow: 0 0 0 transparent;
+border: 0 none;
+max-width: 206px;
+}
+#selection .image-stack.hover-move:hover img {
+height: 900px;
+max-width: 412px;
+border: solid #fff;
+border-width: 25px 15px;;
 }
 #configurator > div {
 position: relative;
@@ -58,6 +70,11 @@ height: 60px;
 margin: 0.33em -0.333em;
 padding: 0.83em 0.33em 0;
 border-top: 2px solid;
+}
+#configurator > div h3 span {
+padding-left: 1em;
+color: #d7d7d7;
+font-size: 0.75em;
 }
 #configurator > div:first-child h3 {
 border-top: 0 none;

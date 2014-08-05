@@ -207,6 +207,30 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         return euro;
     };
 
+    var hoverMove = function () {
+        var thisElem = $('#selection .hover-move');
+        var thisElemWidth = thisElem.width();
+        var thisElemHeight = thisElem.height();
+
+        thisElem.mouseenter( function(){
+            thisElem.on('mousemove', function (e) {
+                var mouseX = e.pageX - thisElem.offset().left;
+                var mouseY = e.pageY - thisElem.offset().top;
+                thisElem.find('img').css({
+                  // Adding 15px border left & right
+                  'left': -(mouseX / thisElemWidth * (thisElemWidth + 30)) + "px",
+                  // Adding 25px border top & bottom
+                  'top':  -(mouseY / thisElemHeight * (thisElemHeight + 50)) + "px"
+                });
+            });
+        }).mouseleave( function () {
+            thisElem.find('img').css({
+                  'left': 0,
+                  'top':  0
+                });
+        });
+    }
+
     exports.init = function (user_config) {
 
         config = user_config;
@@ -220,9 +244,11 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.hiddenField:  field to fill order details
         // config.cbSelect:     optional callback on selectItem (Arguments: Group, Item, Price)
         // config.cbUnSelect:   optional callback on unselectItem
+        // config.hoverMove:    (bolean) enable zoom function
         // config.i18n:         object containing translation
 
         // default captions
+        config.hoverMove = config.hoverMove || false;
         config.i18n = config.i18n || {};
         config.i18n.back = config.i18n.back || "One step back";
         config.i18n.shipping = config.i18n.shipping || "* VAT included, plus shipping";
@@ -232,7 +258,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
         // render shop
         var shop = '<div id="selection" class="grid3">' +
-                '<div class="image-stack">' +
+                '<div class="image-stack' + (config.hoverMove?' hover-move':'') + '">' +
                 '<img src="' + config.imgMain + '/' + config.firstGroup + '.png" />' +
                 '</div><div class="total"><p class="amount"><span>0,00 €</span></p>' +
                 ( config.i18n.shipping ?
@@ -254,6 +280,9 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
                 presets = preset_data;
                 renderGroup(config.firstGroup);
+                if ( config.hoverMove ) {
+                    hoverMove();
+                }
 
             }).fail(function() {
                 console.log( "ERROR: Failed to load \"" + config.presets + "\"" );
