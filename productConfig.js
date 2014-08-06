@@ -111,16 +111,16 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             mergePreset(preset);
         }
 
+        // Callback (Arguments: Group, Item, Price)
+        if ( config.cbSelect !== undefined && typeof config.cbSelect === 'function' ) {
+            config.cbSelect( parent.prop('id'), button.find('h4').text(), button.data('price') );
+        }
+
         // Move on to next group
         if (nextGroup !== 'contact') {
             renderGroup(nextGroup);
         } else {
             injectForm();
-        }
-
-        // Callback (Arguments: Group, Item, Price)
-        if ( config.cbSelect !== undefined && typeof config.cbSelect === 'function' ) {
-            config.cbSelect( parent.prop('id'), button.find('h4').text(), button.data('price') );
         }
 
     }
