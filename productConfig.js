@@ -55,10 +55,12 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
         // Append group back button
         if (group !== config.firstGroup) {
-            groupContainer.append('<button class="back-button" data-parentgroup="' +
+            groupContainer.append('<div class="undo"><button class="back-button" data-parentgroup="' +
                     groupContainer.prev().prop('id') + '">' + config.i18n.back +
-                    '</button>');
+                    '</button><button class="cancel-button">' + config.i18n.reset +
+                    '</button></div>');
             groupContainer.find('.back-button').on('click', unselectItem);
+            groupContainer.find('.cancel-button').on('click', exports.reset);
         }
 
         // Check whether there are multiple items.
@@ -129,7 +131,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     var unselectItem = function () {
 
         var previousGroup = $(this).data('parentgroup');
-        $(this).parent().add('#' + previousGroup).remove();
+        $(this).parent().parent().add('#' + previousGroup).remove();
 
         // clean up `order` object
         exports.order.items.pop();
@@ -194,6 +196,9 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         existing_form = existing_form_original.clone( true );
 
         $("#configurator").append('<div>').find('div').last().append(existing_form);
+        $('#configurator').find('input[type="submit"]')
+                .after('<button class="reset-config">' + config.i18n.reset + '</button>');
+        $('#configurator').find('form').find('.reset-config').on('click', exports.reset);
 
         // fill hidden field with order details
         $( config.hiddenField ).val(JSON.stringify(exports.order));
@@ -244,6 +249,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.hiddenField:  field to fill order details
         // config.cbSelect:     optional callback on selectItem (Arguments: Group, Item, Price)
         // config.cbUnSelect:   optional callback on unselectItem
+        // config.cbReset:      optional callback on reset
         // config.hoverMove:    (bolean) enable zoom function
         // config.i18n:         object containing translation
 
@@ -264,7 +270,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
                 ( config.i18n.shipping ?
                     '<p class="shipping">' +
                     config.i18n.shipping +'</p>' : '' ) +
-                '</div><button id="cancel">' + config.i18n.reset + '</button></div>' +
+                '</div></div>' +
                 '<div id="configurator" class="grid9"></div>';
         $('#' + config.shop).append( shop );
 
@@ -294,7 +300,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
     };
 
-    exports.reset = function () {
+    exports.reset = function (e) {
+        e.preventDefault();
         if ( window.confirm( config.i18n.reset_msg ) ) {
             items = JSON.parse(JSON.stringify(items_original));
             exports.order = { items: [], total: 0 };
@@ -302,6 +309,12 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             $('#configurator').html('');
             $('#selection .image-stack').html('<img src="' + config.imgMain +
                     '/' + config.firstGroup + '.png" />');
+
+            // Callback
+            if ( config.cbReset !== undefined && typeof config.cbReset === 'function' ) {
+                config.cbReset();
+            }
+
             renderGroup(config.firstGroup);
         }
     };
