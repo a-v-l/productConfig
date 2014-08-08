@@ -101,7 +101,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         exports.order.total += button.data('price');
 
         // Print total
-        $('#selection .amount').text( toEuro( exports.order.total.toFixed(2) ) );
+        $('#selection .amount').text( toEuro( exports.order.total ) );
 
         // Load new main image
         $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
@@ -144,7 +144,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         items = JSON.parse(JSON.stringify(items_original));
 
         // restore `#selection`
-        var total = toEuro( exports.order.total.toFixed(2) );
+        var total = toEuro( exports.order.total );
         total = total === config.i18n.included ? "<span>0,00 €</span>" : total;
         $('#selection .amount').html( total );
         $('#selection .image-stack img').last().remove();
@@ -200,13 +200,27 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
                 .after('<button class="reset-config">' + config.i18n.reset + '</button>');
         $('#configurator').find('form').find('.reset-config').on('click', exports.reset);
 
-        // fill hidden field with order details
-        $( config.hiddenField ).val(JSON.stringify(exports.order));
+        // fill hidden field with pretty order details
+        var pretty_order = '\n---------------------------------------\n',
+            i,
+            max;
+        for ( i = 0, max = exports.order.items.length; i < max; i += 1) {
+            // group
+            pretty_order += items[ exports.order.items[i].group ].title + ": ";
+            // item
+            pretty_order += exports.order.items[i].item;
+            // price
+            pretty_order += " (" + toEuro( exports.order.items[i].price ) + ")\n";
+        }
+        // total
+        pretty_order += '---------------------------------------\n'
+        pretty_order += config.i18n.total + ": " + toEuro( exports.order.total );
+        $( config.hiddenField ).val( pretty_order );
     }
 
     var toEuro = function (amount) {
         var euro = amount.toString();
-        euro = euro.indexOf('.') !== -1 ? euro.replace(/\.(\d*)/, ',$1') : euro + ',00';
+        euro = euro.indexOf('.') !== -1 ? euro.replace(/\.(\d{1,2})(.*)/, ',$1') : euro + ',00';
         euro = euro.substr(-3,1) === ',' ? euro : euro + "0";
         euro = euro === "0,00" ? config.i18n.included : euro + " €";
         return euro;
@@ -259,6 +273,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         config.i18n.back = config.i18n.back || "One step back";
         config.i18n.shipping = config.i18n.shipping || "* VAT included, plus shipping";
         config.i18n.included = config.i18n.included || "included";
+        config.i18n.total = config.i18n.total || "total";
         config.i18n.reset = config.i18n.reset || "Reset";
         config.i18n.reset_msg = config.i18n.reset_msg || "Note: The complete selection will be reset!";
 
