@@ -60,7 +60,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
                     '</button><button class="cancel-button">' + config.i18n.reset +
                     '</button></div>');
             groupContainer.find('.back-button').on('click', unselectItem);
-            groupContainer.find('.cancel-button').on('click', exports.reset);
+            groupContainer.find('.cancel-button').on('click', {msg: config.i18n.reset_msg}, exports.reset);
         }
 
         // Check whether there are multiple items.
@@ -198,7 +198,8 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         $("#configurator").append('<div>').find('div').last().append(existing_form);
         $('#configurator').find('input[type="submit"]')
                 .after('<button class="reset-config">' + config.i18n.reset + '</button>');
-        $('#configurator').find('form').find('.reset-config').on('click', exports.reset);
+        $('#configurator').find('form').find('.reset-config')
+            .on('click', {msg: config.i18n.reset_msg}, exports.reset);
 
         // fill hidden field with pretty order details
         var pretty_order = '\n---------------------------------------\n',
@@ -315,23 +316,30 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
 
     };
 
+    // globally called: ProCONFIG.reset({data:{msg:"silent"}});
+    // globally called: ProCONFIG.reset({data:{msg:"Really want to reset?"}});
     exports.reset = function (e) {
-        e.preventDefault();
-        if ( window.confirm( config.i18n.reset_msg ) ) {
-            items = JSON.parse(JSON.stringify(items_original));
-            exports.order = { items: [], total: 0 };
-            $('#selection .amount').html('<span>0,00 €</span>');
-            $('#configurator').html('');
-            $('#selection .image-stack').html('<img src="' + config.imgMain +
-                    '/' + config.firstGroup + '.png" />');
-
-            // Callback
-            if ( config.cbReset !== undefined && typeof config.cbReset === 'function' ) {
-                config.cbReset();
+        if (e.data.msg !== 'silent') {
+            if (e.type === 'click') {
+                e.preventDefault();
             }
-
-            renderGroup(config.firstGroup);
+            if ( !window.confirm( e.data.msg ) ) {
+                return false;
+            }
         }
+        items = JSON.parse(JSON.stringify(items_original));
+        exports.order = { items: [], total: 0 };
+        $('#selection .amount').html('<span>0,00 €</span>');
+        $('#configurator').html('');
+        $('#selection .image-stack').html('<img src="' + config.imgMain +
+                '/' + config.firstGroup + '.png" />');
+
+        // Callback
+        if ( config.cbReset !== undefined && typeof config.cbReset === 'function' ) {
+            config.cbReset();
+        }
+
+        renderGroup(config.firstGroup);
     };
 
     return exports;
