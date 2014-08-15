@@ -225,6 +225,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
     }
 
     var toEuro = function (amount) {
+        amount = Math.round( amount * 100 ) / 100;
         var euro = amount.toString();
         euro = euro.indexOf('.') !== -1 ? euro.replace(/\.(\d{1,2})(.*)/, ',$1') : euro + ',00';
         euro = euro.substr(-3,1) === ',' ? euro : euro + "0";
