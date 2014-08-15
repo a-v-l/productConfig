@@ -37,7 +37,8 @@
             items: "json/items.json",         // json file with items
             presets: "json/presets.json",     // json file with presets
             existingForm: '#order-form form', // form on page to append to configurator
-            hiddenField: '#details'           // field to fill order details
+            hiddenField: '#details',          // field to fill order details
+            descriptive: true          // (boolean) add an descriptive image to each group
         });
         $('#cancel').on('click', function(e) {
             e.preventDefault();

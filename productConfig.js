@@ -37,6 +37,12 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
             max = items[group].items.length,
             i, item;
 
+        // Append descriptive image
+        if ( config.descriptive ) {
+            $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
+                    group + '.png">');
+        }
+
         // Append group description
         groupContainer.append( '<h3>' + items[group].title + '</h3><p>' +
                 items[group].description + '</p><div class="items">' );
@@ -67,14 +73,10 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // If so, append eventhandler
         // otherwise (->preset) move on to next childgroup
         if (max > 1) {
-
             // Append eventhandler
             groupContainer.find('.item').on('click', selectItem);
-
         } else {
-
             selectItem( groupContainer.find('.item')[0] );
-
         }
 
     };
@@ -104,9 +106,12 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         $('#selection .amount').text( toEuro( exports.order.total ) );
 
         // Load new main image
-        $('#selection .image-stack').append('<img src="' + config.imgMain + '/' +
-                parent.prop('id') + "_" + button.data('id') +
-                '.png">');
+        var newImg = config.imgMain + '/' + parent.prop('id') + "_" + button.data('id') + '.png';
+        if ( config.descriptive ) {
+            $('#selection .image-stack img').last().prop('src', newImg);
+        } else {
+            $('#selection .image-stack').append('<img src="' + newImg + '">');
+        }
 
         // Load preset if any
         if (preset !== null) {
@@ -147,7 +152,7 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         var total = toEuro( exports.order.total );
         total = total === config.i18n.included ? "<span>0,00 €</span>" : total;
         $('#selection .amount').html( total );
-        $('#selection .image-stack img').last().remove();
+        $('#selection .image-stack img').slice( (config.descriptive ? -2 : -1) ).remove();
 
         renderGroup(previousGroup);
 
@@ -265,11 +270,13 @@ window.ProCONFIG = ( function (window, document, $, undefined) {
         // config.cbSelect:     optional callback on selectItem (Arguments: Group, Item, Price)
         // config.cbUnSelect:   optional callback on unselectItem
         // config.cbReset:      optional callback on reset
-        // config.hoverMove:    (bolean) enable zoom function
+        // config.hoverMove:    (boolean) enable zoom function
+        // config.descriptive:  (boolean) add an descriptive image to each group
         // config.i18n:         object containing translation
 
-        // default captions
+        // default options
         config.hoverMove = config.hoverMove || false;
+        config.descriptive = config.descriptive || false;
         config.i18n = config.i18n || {};
         config.i18n.back = config.i18n.back || "One step back";
         config.i18n.shipping = config.i18n.shipping || "* VAT included, plus shipping";
